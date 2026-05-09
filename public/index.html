@@ -14,6 +14,7 @@
       --text: #fff;
       --dim: #71717a;
       --border: #1e1e2e;
+      --success: #22c55e;
     }
     body {
       margin: 0; padding: 0;
@@ -26,10 +27,18 @@
       padding: 20px;
     }
     .container { max-width: 440px; width: 100%; }
+    
     .logo {
-      font-weight: 900; font-size: 32px; letter-spacing: -1px; margin-bottom: 25px;
+      font-weight: 900; font-size: 34px; letter-spacing: -1px; margin-bottom: 5px;
       background: linear-gradient(135deg, var(--primary), #a855f7);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .live-count-header {
+      font-size: 11px; color: var(--success); font-weight: 700; letter-spacing: 1px;
+      margin-bottom: 30px; text-transform: uppercase;
+      background: rgba(34, 197, 94, 0.1); padding: 4px 12px; border-radius: 20px;
+      display: inline-block;
     }
     
     .btn-entry {
@@ -38,91 +47,79 @@
       text-decoration: none; border-radius: 16px;
       font-weight: 800; font-size: 18px;
       box-shadow: 0 10px 30px rgba(99,102,241,0.4);
-      margin-bottom: 20px; transition: transform 0.2s;
+      margin-bottom: 15px; transition: transform 0.2s;
     }
     .btn-entry:active { transform: scale(0.96); }
 
     .hunter-btn {
-      background: #1a1a25; color: #fff; border: 1px solid var(--primary);
-      padding: 12px 24px; border-radius: 10px; font-weight: 700; cursor: pointer;
-      width: 100%; margin-bottom: 30px;
+      background: transparent; color: #fff; border: 1.5px solid var(--border);
+      padding: 14px 24px; border-radius: 12px; font-weight: 700; cursor: pointer;
+      width: 100%; margin-bottom: 30px; font-size: 14px;
+      transition: all 0.2s;
     }
 
     .instruction-card {
-      background: #161625; border-radius: 16px; padding: 20px;
-      text-align: left; border: 1px solid #2e2e4e;
+      background: var(--bg-card); border-radius: 18px; padding: 24px;
+      text-align: left; border: 1px solid var(--border);
     }
-    .instruction-card h3 { font-size: 15px; margin-bottom: 12px; color: #a5b4fc; }
-    .instruction-card p { font-size: 13px; color: var(--dim); line-height: 1.6; margin-bottom: 10px; }
+    .instruction-card h3 { font-size: 16px; margin: 0 0 15px 0; color: #a5b4fc; display: flex; align-items: center; gap: 8px; }
+    .instruction-card p { font-size: 13.5px; color: var(--dim); line-height: 1.6; margin: 0 0 12px 0; }
     .instruction-card strong { color: #fff; }
     
     .error-img-box {
-      background: #fff; border-radius: 10px; margin: 15px 0; padding: 10px;
-      display: flex; flex-direction: column; align-items: center; border: 2px solid #6366f1;
+      background: #fff; border-radius: 12px; margin: 15px 0; padding: 15px;
+      display: flex; flex-direction: column; align-items: center; border: 2px solid var(--primary);
     }
-    .error-img-placeholder { color: #000; font-weight: 800; font-size: 14px; margin-bottom: 5px; }
+    .error-img-placeholder { color: #000; font-weight: 800; font-size: 15px; margin-bottom: 5px; }
     .error-img-link { color: #6366f1; font-weight: 700; font-size: 13px; text-decoration: underline; }
 
-    .footer { margin-top: 40px; font-size: 13px; color: var(--dim); }
+    .footer { margin-top: 40px; font-size: 13px; color: var(--dim); padding-bottom: 20px; }
     .footer strong { color: #fff; }
-    
-    .urgent-note { color: #f87171; font-size: 12px; font-weight: 700; margin-top: 10px; display: block; border-top: 1px solid #333; padding-top: 10px; }
+
+    .pulse {
+      display: inline-block; width: 6px; height: 6px; background: var(--success);
+      border-radius: 50%; margin-right: 6px; box-shadow: 0 0 10px var(--success);
+      animation: pulse-animation 2s infinite;
+    }
+    @keyframes pulse-animation {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="logo">SKView</div>
+    <div class="live-count-header">
+      <span class="pulse"></span> <span id="visitCounter">0</span> Students Helped
+    </div>
     
-    <div>
+    <div style="margin-top: 10px;">
       <a href="/entry" class="btn-entry">ENTER COE MAIN</a>
       <button class="hunter-btn" onclick="toggleHunter()" id="hunterBtn">START HUNTER MODE</button>
     </div>
 
     <div class="instruction-card">
-      <h3>🚀 How to Achievement Entry:</h3>
-      <p>1. If the website doesn't open, <strong>Switch on Hunter Mode</strong> then try the Enter button again.</p>
+      <h3>🚀 Success Guide</h3>
+      <p>1. If the website fails, <strong>Switch on Hunter Mode</strong> then try the Enter button.</p>
+      <p>2. If you see "Can't translate", click <strong>"Go to original page"</strong>.</p>
       
-      <p>2. If you see the "Can't translate" page (shown below), click <strong>"Go to original page"</strong>.</p>
       <div class="error-img-box">
         <div class="error-img-placeholder">Google Translate</div>
-        <div style="color:#333; font-size: 11px; margin: 10px 0;">Can't translate this page</div>
+        <div style="color:#333; font-size: 12px; margin: 10px 0;">Can't translate this page</div>
         <div class="error-img-link">Go to original page</div>
       </div>
       
-      <p>3. <strong>Wait for a min</strong> as servers are busy. Please wait and <strong>do not close or exit</strong> while it reloads.</p>
-      
-      <span class="urgent-note">⚠️ Note: Constant refreshing is handled by our pipeline. Just wait.</span>
+      <p>3. <strong>Wait for a minute</strong> as servers are busy. Please wait and <strong>do not close</strong> while it reloads.</p>
     </div>
 
     <footer class="footer">
       <div>Founder: <strong>KK_947</strong></div>
-      <div style="font-size: 11px; margin-top: 4px;">Powered by Kinnova Tech</div>
+      <div style="font-size: 11px; margin-top: 5px; opacity: 0.7;">Powered by Kinnova Tech</div>
     </footer>
   </div>
 
-  <script>
-    let hunterActive = false;
-    function toggleHunter() {
-      hunterActive = !hunterActive;
-      const btn = document.getElementById('hunterBtn');
-      if (hunterActive) {
-        btn.textContent = "HUNTER MODE ON - MONITORING...";
-        btn.style.color = "#22c55e";
-        btn.style.borderColor = "#22c55e";
-        startHunting();
-      } else {
-        btn.textContent = "START HUNTER MODE";
-        btn.style.color = "#fff";
-        btn.style.borderColor = "#6366f1";
-      }
-    }
-    function startHunting() {
-      if (!hunterActive) return;
-      fetch('/api/ping?id=coe').then(r => r.json()).then(d => {
-        if (d.status === 'online') window.location.href = "/entry";
-        else setTimeout(startHunting, 2000);
-      });
-    }
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
