@@ -42,54 +42,56 @@
     }
     .btn-entry:active { transform: scale(0.96); }
 
-    .hunter-box {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 16px; padding: 20px; margin-bottom: 25px;
-    }
     .hunter-btn {
       background: #1a1a25; color: #fff; border: 1px solid var(--primary);
       padding: 12px 24px; border-radius: 10px; font-weight: 700; cursor: pointer;
+      width: 100%; margin-bottom: 30px;
     }
 
     .instruction-card {
       background: #161625; border-radius: 16px; padding: 20px;
       text-align: left; border: 1px solid #2e2e4e;
     }
-    .instruction-card h3 { font-size: 15px; margin-bottom: 10px; color: #a5b4fc; }
-    .instruction-card p { font-size: 13px; color: var(--dim); line-height: 1.5; }
+    .instruction-card h3 { font-size: 15px; margin-bottom: 12px; color: #a5b4fc; }
+    .instruction-card p { font-size: 13px; color: var(--dim); line-height: 1.6; margin-bottom: 10px; }
     .instruction-card strong { color: #fff; }
     
     .error-img-box {
       background: #fff; border-radius: 10px; margin: 15px 0; padding: 10px;
-      display: flex; flex-direction: column; align-items: center;
+      display: flex; flex-direction: column; align-items: center; border: 2px solid #6366f1;
     }
-    .error-img-placeholder {
-       color: #000; font-weight: 800; font-size: 14px; margin-bottom: 5px;
-    }
+    .error-img-placeholder { color: #000; font-weight: 800; font-size: 14px; margin-bottom: 5px; }
     .error-img-link { color: #6366f1; font-weight: 700; font-size: 13px; text-decoration: underline; }
 
     .footer { margin-top: 40px; font-size: 13px; color: var(--dim); }
     .footer strong { color: #fff; }
+    
+    .urgent-note { color: #f87171; font-size: 12px; font-weight: 700; margin-top: 10px; display: block; border-top: 1px solid #333; padding-top: 10px; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="logo">SKView</div>
     
-    <div style="margin-bottom: 30px;">
+    <div>
       <a href="/entry" class="btn-entry">ENTER COE MAIN</a>
       <button class="hunter-btn" onclick="toggleHunter()" id="hunterBtn">START HUNTER MODE</button>
     </div>
 
     <div class="instruction-card">
-      <h3>⚠️ If you see a "Can't translate" page:</h3>
-      <p>1. Click <strong>"Go to original page"</strong> (shown below).</p>
+      <h3>🚀 How to Achievement Entry:</h3>
+      <p>1. If the website doesn't open, <strong>Switch on Hunter Mode</strong> then try the Enter button again.</p>
+      
+      <p>2. If you see the "Can't translate" page (shown below), click <strong>"Go to original page"</strong>.</p>
       <div class="error-img-box">
         <div class="error-img-placeholder">Google Translate</div>
-        <div style="color:#333; font-size: 12px; margin: 10px 0;">Can't translate this page</div>
+        <div style="color:#333; font-size: 11px; margin: 10px 0;">Can't translate this page</div>
         <div class="error-img-link">Go to original page</div>
       </div>
-      <p>2. <strong>Wait 5-10 seconds.</strong> You will be automatically redirected to the actual Anna University login page.</p>
+      
+      <p>3. <strong>Wait for a min</strong> as servers are busy. Please wait and <strong>do not close or exit</strong> while it reloads.</p>
+      
+      <span class="urgent-note">⚠️ Note: Constant refreshing is handled by our pipeline. Just wait.</span>
     </div>
 
     <footer class="footer">
@@ -104,12 +106,14 @@
       hunterActive = !hunterActive;
       const btn = document.getElementById('hunterBtn');
       if (hunterActive) {
-        btn.textContent = "HUNTER ACTIVE...";
+        btn.textContent = "HUNTER MODE ON - MONITORING...";
         btn.style.color = "#22c55e";
+        btn.style.borderColor = "#22c55e";
         startHunting();
       } else {
         btn.textContent = "START HUNTER MODE";
         btn.style.color = "#fff";
+        btn.style.borderColor = "#6366f1";
       }
     }
     function startHunting() {
