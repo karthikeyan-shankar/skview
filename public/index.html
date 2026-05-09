@@ -66,10 +66,14 @@
     @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
     .logo {
-      font-family: 'Dancing Script', cursive;
-      font-weight: 700; font-size: 52px; letter-spacing: 0; margin-bottom: 5px;
-      color: #fff; text-shadow: 0 0 15px rgba(255, 77, 77, 0.5);
+      font-size: 42px; font-weight: 400; letter-spacing: -1.5px; margin-bottom: 5px;
+      color: #fff; display: flex; align-items: center; justify-content: center; gap: 4px;
     }
+    .logo b {
+      background: var(--primary); color: #000; padding: 0 10px; border-radius: 8px;
+      font-weight: 800; box-shadow: 0 0 20px rgba(255, 77, 77, 0.4);
+    }
+    .logo span { font-weight: 300; opacity: 0.9; }
 
     .counter-pill {
       display: inline-flex; align-items: center; gap: 8px;
@@ -139,7 +143,7 @@
   </div>
 
   <div class="container">
-    <div class="logo">SKView</div>
+    <div class="logo"><b>SK</b><span>View</span></div>
     <div class="counter-pill">
       <div class="pulse"></div>
       <span id="visitCounter">0</span> Students Got Results
