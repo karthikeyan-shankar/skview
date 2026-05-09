@@ -3,168 +3,180 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SKView — Ultra-Fast Gateway</title>
+  <title>SKView — Hyper-Glass Gateway</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #8b5cf6;
-      --secondary: #ec4899;
-      --glass: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.1);
+      --primary: #22d3ee;
+      --secondary: #818cf8;
+      --accent: #c084fc;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.12);
       --text: #ffffff;
-      --text-dim: rgba(255, 255, 255, 0.6);
+      --text-dim: rgba(255, 255, 255, 0.5);
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
       margin: 0; padding: 0;
-      background: #030303;
+      background: #020205;
       color: var(--text);
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       min-height: 100vh;
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
-    /* Animated Mesh Background */
-    .mesh-bg {
+    /* Hyper-Dynamic Background */
+    .bg-elements {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: 
-        radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
-      z-index: -1;
+      z-index: -1; overflow: hidden;
+      background: radial-gradient(circle at 50% 50%, #0a0a1a, #020205);
+    }
+    .orb {
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4;
+      animation: drift 20s infinite alternate;
+    }
+    .orb-1 { width: 400px; height: 400px; background: var(--primary); top: -10%; left: -10%; }
+    .orb-2 { width: 350px; height: 350px; background: var(--accent); bottom: -10%; right: -5%; animation-delay: -5s; }
+    .orb-3 { width: 300px; height: 300px; background: var(--secondary); top: 40%; right: 10%; animation-delay: -10s; }
+
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to { transform: translate(50px, 100px) scale(1.2); }
     }
 
     .container {
-      width: 90%; max-width: 400px;
-      padding: 40px 0;
-      animation: fadeIn 0.8s ease-out;
+      width: 90%; max-width: 420px;
+      padding: 20px 0;
+      z-index: 10;
+      animation: scaleUp 1s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes scaleUp {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
 
-    .logo-area { margin-bottom: 40px; text-align: center; }
+    .logo-area { margin-bottom: 30px; }
     .logo {
-      font-weight: 800; font-size: 42px; letter-spacing: -2px;
-      background: linear-gradient(to right, #fff, var(--text-dim));
+      font-weight: 800; font-size: 48px; letter-spacing: -3px;
+      background: linear-gradient(to bottom, #fff 40%, rgba(255,255,255,0.4));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
-    .live-status {
+    .status-pill {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--glass); border: 1px solid var(--glass-border);
-      padding: 6px 14px; border-radius: 20px; font-size: 12px;
-      font-weight: 600; color: #4ade80; backdrop-filter: blur(10px);
-    }
-
-    .pulse-dot {
-      width: 8px; height: 8px; background: #4ade80; border-radius: 50%;
-      box-shadow: 0 0 12px #4ade80; animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(0.95); opacity: 1; }
-      70% { transform: scale(1.1); opacity: 0.5; }
-      100% { transform: scale(0.95); opacity: 1; }
-    }
-
-    /* Glass Card */
-    .glass-card {
-      background: rgba(20, 20, 25, 0.7);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 6px 16px; border-radius: 100px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--primary);
       backdrop-filter: blur(20px);
+    }
+    .pulse {
+      width: 6px; height: 6px; background: var(--primary); border-radius: 50%;
+      box-shadow: 0 0 12px var(--primary); animation: glow 2s infinite;
+    }
+    @keyframes glow { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } }
+
+    /* Ultra-Glass Card */
+    .hyper-glass {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(50px) saturate(180%);
+      -webkit-backdrop-filter: blur(50px) saturate(180%);
       border: 1px solid var(--glass-border);
-      border-radius: 32px;
-      padding: 30px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border-radius: 40px;
+      padding: 35px;
+      box-shadow: 
+        0 20px 50px rgba(0,0,0,0.4),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+      position: relative;
+    }
+    .hyper-glass::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent);
+      border-radius: 40px 40px 0 0; pointer-events: none;
     }
 
-    .btn-main {
-      display: flex; align-items: center; justify-content: center;
-      width: 100%; padding: 20px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white; text-decoration: none; border-radius: 20px;
-      font-weight: 700; font-size: 18px; margin-bottom: 15px;
-      box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    .btn-action {
+      display: block; width: 100%; padding: 22px;
+      background: rgba(255, 255, 255, 0.95); color: #000;
+      text-decoration: none; border-radius: 22px;
+      font-weight: 800; font-size: 18px; text-align: center;
+      margin-bottom: 12px; transition: all 0.3s;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
-    .btn-main:active { transform: scale(0.95); opacity: 0.9; }
+    .btn-action:active { transform: scale(0.96); opacity: 0.8; }
 
-    .btn-hunter {
-      background: var(--glass); border: 1px solid var(--glass-border);
-      color: white; width: 100%; padding: 16px; border-radius: 20px;
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: #fff; width: 100%; padding: 18px; border-radius: 22px;
       font-weight: 600; font-size: 14px; cursor: pointer;
-      transition: all 0.2s; margin-bottom: 25px;
+      margin-bottom: 30px; transition: all 0.2s;
     }
-    .btn-hunter.active { border-color: #4ade80; color: #4ade80; }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
 
-    .instructions {
-      border-top: 1px solid var(--glass-border);
-      padding-top: 25px;
-    }
-    .instructions h3 {
-      font-size: 16px; margin: 0 0 15px 0; font-weight: 600;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .instructions p {
-      font-size: 13.5px; color: var(--text-dim); line-height: 1.6; margin-bottom: 12px;
-    }
+    .instructions { text-align: left; opacity: 0.9; }
+    .instructions h4 { font-size: 14px; color: var(--primary); margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px; }
+    .instructions p { font-size: 13px; color: var(--text-dim); line-height: 1.6; margin-bottom: 15px; }
 
-    .guide-box {
-      background: white; border-radius: 16px; padding: 12px;
-      margin: 15px 0; text-align: center;
+    .mini-card {
+      background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
+      border-radius: 16px; padding: 15px; margin: 15px 0; text-align: center;
     }
-    .guide-box .title { color: #000; font-weight: 800; font-size: 14px; }
-    .guide-box .action { color: #6366f1; font-weight: 700; font-size: 13px; text-decoration: underline; margin-top: 5px; }
+    .mini-card span { display: block; font-weight: 800; font-size: 14px; }
+    .mini-card a { color: var(--primary); font-size: 12px; font-weight: 700; text-decoration: underline; margin-top: 5px; display: inline-block; }
 
     .footer {
-      margin-top: 40px; text-align: center;
-      font-size: 13px; color: var(--text-dim);
+      margin-top: 30px; font-size: 12px; color: var(--text-dim);
     }
-    .footer strong { color: #fff; letter-spacing: 0.5px; }
+    .footer strong { color: #fff; }
 
   </style>
 </head>
 <body>
-  <div class="mesh-bg"></div>
+  <div class="bg-elements">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
 
   <div class="container">
     <div class="logo-area">
       <div class="logo">SKView</div>
-      <div class="live-status">
-        <span class="pulse-dot"></span>
-        <span id="visitCounter">...</span> Students Assisted
+      <div class="status-pill">
+        <div class="pulse"></div>
+        <span id="visitCounter">0</span> Unique Sessions
       </div>
     </div>
 
-    <div class="glass-card">
-      <a href="/entry" class="btn-main">ENTER COE MAIN</a>
-      <button class="btn-hunter" onclick="toggleHunter()" id="hunterBtn">INITIALIZE HUNTER MODE</button>
+    <div class="hyper-glass">
+      <a href="/entry" class="btn-action">ENTRY PATHWAY</a>
+      <button class="btn-secondary" onclick="toggleHunter()" id="hunterBtn">INITIALIZE HUNTER ENGINE</button>
 
       <div class="instructions">
-        <h3>🚀 Optimization Guide</h3>
-        <p>1. If latency is high, enable <strong>Hunter Mode</strong> to auto-detect availability.</p>
-        <p>2. On "Can't translate" screen, tap <strong>"Go to original page"</strong>.</p>
+        <h4>System Protocol</h4>
+        <p>1. If latency persists, activate the <strong>Hunter Engine</strong> for automated socket monitoring.</p>
+        <p>2. On proxy timeout, select <strong>"Go to original page"</strong> within the bridge layer.</p>
         
-        <div class="guide-box">
-          <div class="title">Google Translate</div>
-          <div style="color:#666; font-size: 11px; margin: 4px 0;">Proxy Layer Response</div>
-          <div class="action">Go to original page</div>
+        <div class="mini-card">
+          <span style="color:#fff">Bridge Layer Response</span>
+          <a href="#">Go to original page</a>
         </div>
         
-        <p>3. <strong>System Buffering:</strong> Servers are under load. Please remain on page; it will auto-resolve.</p>
+        <p>3. <strong>Data Handshake:</strong> High load detected. Do not terminate session during reload.</p>
       </div>
     </div>
 
     <footer class="footer">
       <div>Architect: <strong>KK_947</strong></div>
-      <div style="font-size: 11px; margin-top: 6px; opacity: 0.5;">POWERED BY KINNOVA TECH</div>
+      <div style="font-size: 10px; margin-top: 8px; letter-spacing: 2px;">KINNOVA TECH LABS</div>
     </footer>
   </div>
 
