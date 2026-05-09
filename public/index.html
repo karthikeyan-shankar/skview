@@ -3,180 +3,168 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SKView — Hyper-Glass Gateway</title>
+  <title>SKView — Fast Results Gateway</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #22d3ee;
-      --secondary: #818cf8;
-      --accent: #c084fc;
-      --glass-bg: rgba(255, 255, 255, 0.03);
-      --glass-border: rgba(255, 255, 255, 0.12);
+      --primary: #ff4d4d; /* Red/Orange */
+      --secondary: #ff8c00;
+      --bg: #030303;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.15);
       --text: #ffffff;
-      --text-dim: rgba(255, 255, 255, 0.5);
+      --text-dim: rgba(255, 255, 255, 0.6);
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
       margin: 0; padding: 0;
-      background: #020205;
+      background: var(--bg);
       color: var(--text);
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Outfit', sans-serif;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       min-height: 100vh;
       overflow: hidden;
     }
 
-    /* Hyper-Dynamic Background */
-    .bg-elements {
+    /* Reference Image Theme: Glowing Rings */
+    .rings-container {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      z-index: -1; overflow: hidden;
-      background: radial-gradient(circle at 50% 50%, #0a0a1a, #020205);
+      z-index: -1; pointer-events: none;
     }
-    .orb {
-      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4;
-      animation: drift 20s infinite alternate;
+    .ring {
+      position: absolute; border-radius: 50%;
+      border: 2px solid transparent;
+      animation: rotate 20s linear infinite;
     }
-    .orb-1 { width: 400px; height: 400px; background: var(--primary); top: -10%; left: -10%; }
-    .orb-2 { width: 350px; height: 350px; background: var(--accent); bottom: -10%; right: -5%; animation-delay: -5s; }
-    .orb-3 { width: 300px; height: 300px; background: var(--secondary); top: 40%; right: 10%; animation-delay: -10s; }
+    .ring-1 {
+      width: 500px; height: 500px;
+      border-top-color: var(--primary);
+      filter: blur(2px); box-shadow: 0 -10px 40px rgba(255, 77, 77, 0.4);
+      top: -10%; right: -10%;
+    }
+    .ring-2 {
+      width: 400px; height: 400px;
+      border-bottom-color: var(--secondary);
+      filter: blur(2px); box-shadow: 0 10px 40px rgba(255, 140, 0, 0.4);
+      bottom: -10%; left: -10%;
+      animation-direction: reverse;
+    }
 
-    @keyframes drift {
-      from { transform: translate(0, 0) scale(1); }
-      to { transform: translate(50px, 100px) scale(1.2); }
-    }
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
     .container {
-      width: 90%; max-width: 420px;
+      width: 90%; max-width: 400px;
       padding: 20px 0;
-      z-index: 10;
-      animation: scaleUp 1s cubic-bezier(0.16, 1, 0.3, 1);
+      text-align: center;
+      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    @keyframes scaleUp {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-    .logo-area { margin-bottom: 30px; }
     .logo {
-      font-weight: 800; font-size: 48px; letter-spacing: -3px;
-      background: linear-gradient(to bottom, #fff 40%, rgba(255,255,255,0.4));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
+      font-weight: 800; font-size: 44px; letter-spacing: -2px; margin-bottom: 5px;
+      color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.2);
     }
 
-    .status-pill {
+    .counter-pill {
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 6px 16px; border-radius: 100px;
-      font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
-      text-transform: uppercase; color: var(--primary);
-      backdrop-filter: blur(20px);
-    }
-    .pulse {
-      width: 6px; height: 6px; background: var(--primary); border-radius: 50%;
-      box-shadow: 0 0 12px var(--primary); animation: glow 2s infinite;
-    }
-    @keyframes glow { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } }
-
-    /* Ultra-Glass Card */
-    .hyper-glass {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(50px) saturate(180%);
-      -webkit-backdrop-filter: blur(50px) saturate(180%);
+      background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--glass-border);
-      border-radius: 40px;
+      padding: 6px 18px; border-radius: 100px;
+      font-size: 12px; font-weight: 700; color: #ff6b6b;
+      backdrop-filter: blur(20px); margin-bottom: 30px;
+    }
+    .pulse { width: 6px; height: 6px; background: #ff4d4d; border-radius: 50%; box-shadow: 0 0 10px #ff4d4d; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    /* Ultra-Gloss Card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(40px) saturate(150%);
+      -webkit-backdrop-filter: blur(40px) saturate(150%);
+      border: 1px solid var(--glass-border);
+      border-radius: 35px;
       padding: 35px;
       box-shadow: 
-        0 20px 50px rgba(0,0,0,0.4),
-        inset 0 0 0 1px rgba(255,255,255,0.05);
-      position: relative;
-    }
-    .hyper-glass::after {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-      background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent);
-      border-radius: 40px 40px 0 0; pointer-events: none;
+        0 30px 60px rgba(0,0,0,0.6),
+        inset 0 1px 1px rgba(255,255,255,0.1);
     }
 
-    .btn-action {
+    .btn-primary {
       display: block; width: 100%; padding: 22px;
-      background: rgba(255, 255, 255, 0.95); color: #000;
-      text-decoration: none; border-radius: 22px;
-      font-weight: 800; font-size: 18px; text-align: center;
-      margin-bottom: 12px; transition: all 0.3s;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      background: #fff; color: #000;
+      text-decoration: none; border-radius: 20px;
+      font-weight: 800; font-size: 18px; margin-bottom: 12px;
+      transition: all 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
-    .btn-action:active { transform: scale(0.96); opacity: 0.8; }
+    .btn-primary:active { transform: scale(0.96); opacity: 0.8; }
 
-    .btn-secondary {
+    .btn-hunter {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--glass-border);
-      color: #fff; width: 100%; padding: 18px; border-radius: 22px;
+      color: #fff; width: 100%; padding: 18px; border-radius: 20px;
       font-weight: 600; font-size: 14px; cursor: pointer;
       margin-bottom: 30px; transition: all 0.2s;
     }
-    .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
 
-    .instructions { text-align: left; opacity: 0.9; }
-    .instructions h4 { font-size: 14px; color: var(--primary); margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px; }
-    .instructions p { font-size: 13px; color: var(--text-dim); line-height: 1.6; margin-bottom: 15px; }
+    .info-section { text-align: left; }
+    .info-section h3 { font-size: 14px; color: #ff8c00; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 1px; }
+    .info-section p { font-size: 13.5px; color: var(--text-dim); line-height: 1.6; margin: 0 0 12px 0; }
+    .info-section strong { color: #fff; }
 
-    .mini-card {
-      background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
-      border-radius: 16px; padding: 15px; margin: 15px 0; text-align: center;
+    .help-box {
+      background: rgba(255,255,255,1); border-radius: 16px; padding: 12px; margin: 15px 0; text-align: center;
     }
-    .mini-card span { display: block; font-weight: 800; font-size: 14px; }
-    .mini-card a { color: var(--primary); font-size: 12px; font-weight: 700; text-decoration: underline; margin-top: 5px; display: inline-block; }
+    .help-box span { display: block; color: #000; font-weight: 800; font-size: 14px; }
+    .help-box a { color: #ff4d4d; font-size: 13px; font-weight: 700; text-decoration: underline; margin-top: 5px; display: inline-block; }
 
     .footer {
-      margin-top: 30px; font-size: 12px; color: var(--text-dim);
+      margin-top: 40px; text-align: center;
+      font-size: 13px; color: var(--text-dim); width: 100%;
     }
     .footer strong { color: #fff; }
+    .footer .kinnova { font-size: 11px; margin-top: 5px; letter-spacing: 2px; color: #ff8c00; font-weight: 800; }
 
   </style>
 </head>
 <body>
-  <div class="bg-elements">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
+  <div class="rings-container">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
   </div>
 
   <div class="container">
-    <div class="logo-area">
-      <div class="logo">SKView</div>
-      <div class="status-pill">
-        <div class="pulse"></div>
-        <span id="visitCounter">0</span> Unique Sessions
-      </div>
+    <div class="logo">SKView</div>
+    <div class="counter-pill">
+      <div class="pulse"></div>
+      <span id="visitCounter">0</span> Students Got Results
     </div>
 
-    <div class="hyper-glass">
-      <a href="/entry" class="btn-action">ENTRY PATHWAY</a>
-      <button class="btn-secondary" onclick="toggleHunter()" id="hunterBtn">INITIALIZE HUNTER ENGINE</button>
+    <div class="glass-card">
+      <a href="/entry" class="btn-primary">ENTER COE MAIN</a>
+      <button class="btn-hunter" onclick="toggleHunter()" id="hunterBtn">USE HUNTER MODE</button>
 
-      <div class="instructions">
-        <h4>System Protocol</h4>
-        <p>1. If latency persists, activate the <strong>Hunter Engine</strong> for automated socket monitoring.</p>
-        <p>2. On proxy timeout, select <strong>"Go to original page"</strong> within the bridge layer.</p>
+      <div class="info-section">
+        <h3>Easy 3-Step Guide:</h3>
+        <p>1. If results don't open, click <strong>"Use Hunter Mode"</strong> then try entering again.</p>
+        <p>2. If you see a Google error page, click <strong>"Go to original page"</strong> (shown below).</p>
         
-        <div class="mini-card">
-          <span style="color:#fff">Bridge Layer Response</span>
+        <div class="help-box">
+          <span>Google Translate Error</span>
           <a href="#">Go to original page</a>
         </div>
         
-        <p>3. <strong>Data Handshake:</strong> High load detected. Do not terminate session during reload.</p>
+        <p>3. <strong>Be Patient:</strong> Wait for 1 minute while the page reloads. Do not close it!</p>
       </div>
     </div>
 
     <footer class="footer">
-      <div>Architect: <strong>KK_947</strong></div>
-      <div style="font-size: 10px; margin-top: 8px; letter-spacing: 2px;">KINNOVA TECH LABS</div>
+      <div>Founder: <strong>KK_947</strong></div>
+      <div class="kinnova">KINNOVA TECH</div>
     </footer>
   </div>
 

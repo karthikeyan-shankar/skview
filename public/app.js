@@ -19,14 +19,14 @@ function toggleHunter() {
   hunterActive = !hunterActive;
   const btn = document.getElementById('hunterBtn');
   if (hunterActive) {
-    btn.textContent = "HUNTER MODE ON - MONITORING...";
-    btn.style.color = "#22c55e";
-    btn.style.borderColor = "#22c55e";
+    btn.textContent = "WAITING FOR SERVER...";
+    btn.style.color = "#ff4d4d";
+    btn.style.borderColor = "#ff4d4d";
     startHunting();
   } else {
-    btn.textContent = "START HUNTER MODE";
+    btn.textContent = "USE HUNTER MODE";
     btn.style.color = "#fff";
-    btn.style.borderColor = "#6366f1";
+    btn.style.borderColor = "rgba(255,255,255,0.15)";
   }
 }
 
