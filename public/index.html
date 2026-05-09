@@ -3,120 +3,168 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SKView — Anna University Gateway</title>
+  <title>SKView — Ultra-Fast Gateway</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0a0a0f;
-      --bg-card: #111118;
-      --primary: #6366f1;
-      --text: #fff;
-      --dim: #71717a;
-      --border: #1e1e2e;
-      --success: #22c55e;
+      --primary: #8b5cf6;
+      --secondary: #ec4899;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text: #ffffff;
+      --text-dim: rgba(255, 255, 255, 0.6);
     }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
     body {
       margin: 0; padding: 0;
-      background: var(--bg);
+      background: #030303;
       color: var(--text);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Outfit', sans-serif;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      min-height: 100vh; text-align: center;
-      padding: 20px;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
-    .container { max-width: 440px; width: 100%; }
-    
+
+    /* Animated Mesh Background */
+    .mesh-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: 
+        radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+      z-index: -1;
+    }
+
+    .container {
+      width: 90%; max-width: 400px;
+      padding: 40px 0;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-area { margin-bottom: 40px; text-align: center; }
     .logo {
-      font-weight: 900; font-size: 34px; letter-spacing: -1px; margin-bottom: 5px;
-      background: linear-gradient(135deg, var(--primary), #a855f7);
+      font-weight: 800; font-size: 42px; letter-spacing: -2px;
+      background: linear-gradient(to right, #fff, var(--text-dim));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
     }
 
-    .live-count-header {
-      font-size: 11px; color: var(--success); font-weight: 700; letter-spacing: 1px;
-      margin-bottom: 30px; text-transform: uppercase;
-      background: rgba(34, 197, 94, 0.1); padding: 4px 12px; border-radius: 20px;
-      display: inline-block;
-    }
-    
-    .btn-entry {
-      display: block; width: 100%; padding: 22px;
-      background: var(--primary); color: #fff;
-      text-decoration: none; border-radius: 16px;
-      font-weight: 800; font-size: 18px;
-      box-shadow: 0 10px 30px rgba(99,102,241,0.4);
-      margin-bottom: 15px; transition: transform 0.2s;
-    }
-    .btn-entry:active { transform: scale(0.96); }
-
-    .hunter-btn {
-      background: transparent; color: #fff; border: 1.5px solid var(--border);
-      padding: 14px 24px; border-radius: 12px; font-weight: 700; cursor: pointer;
-      width: 100%; margin-bottom: 30px; font-size: 14px;
-      transition: all 0.2s;
+    .live-status {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--glass); border: 1px solid var(--glass-border);
+      padding: 6px 14px; border-radius: 20px; font-size: 12px;
+      font-weight: 600; color: #4ade80; backdrop-filter: blur(10px);
     }
 
-    .instruction-card {
-      background: var(--bg-card); border-radius: 18px; padding: 24px;
-      text-align: left; border: 1px solid var(--border);
+    .pulse-dot {
+      width: 8px; height: 8px; background: #4ade80; border-radius: 50%;
+      box-shadow: 0 0 12px #4ade80; animation: pulse 2s infinite;
     }
-    .instruction-card h3 { font-size: 16px; margin: 0 0 15px 0; color: #a5b4fc; display: flex; align-items: center; gap: 8px; }
-    .instruction-card p { font-size: 13.5px; color: var(--dim); line-height: 1.6; margin: 0 0 12px 0; }
-    .instruction-card strong { color: #fff; }
-    
-    .error-img-box {
-      background: #fff; border-radius: 12px; margin: 15px 0; padding: 15px;
-      display: flex; flex-direction: column; align-items: center; border: 2px solid var(--primary);
-    }
-    .error-img-placeholder { color: #000; font-weight: 800; font-size: 15px; margin-bottom: 5px; }
-    .error-img-link { color: #6366f1; font-weight: 700; font-size: 13px; text-decoration: underline; }
 
-    .footer { margin-top: 40px; font-size: 13px; color: var(--dim); padding-bottom: 20px; }
-    .footer strong { color: #fff; }
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 1; }
+      70% { transform: scale(1.1); opacity: 0.5; }
+      100% { transform: scale(0.95); opacity: 1; }
+    }
 
-    .pulse {
-      display: inline-block; width: 6px; height: 6px; background: var(--success);
-      border-radius: 50%; margin-right: 6px; box-shadow: 0 0 10px var(--success);
-      animation: pulse-animation 2s infinite;
+    /* Glass Card */
+    .glass-card {
+      background: rgba(20, 20, 25, 0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px;
+      padding: 30px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     }
-    @keyframes pulse-animation {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+
+    .btn-main {
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; padding: 20px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white; text-decoration: none; border-radius: 20px;
+      font-weight: 700; font-size: 18px; margin-bottom: 15px;
+      box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+    .btn-main:active { transform: scale(0.95); opacity: 0.9; }
+
+    .btn-hunter {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      color: white; width: 100%; padding: 16px; border-radius: 20px;
+      font-weight: 600; font-size: 14px; cursor: pointer;
+      transition: all 0.2s; margin-bottom: 25px;
+    }
+    .btn-hunter.active { border-color: #4ade80; color: #4ade80; }
+
+    .instructions {
+      border-top: 1px solid var(--glass-border);
+      padding-top: 25px;
+    }
+    .instructions h3 {
+      font-size: 16px; margin: 0 0 15px 0; font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .instructions p {
+      font-size: 13.5px; color: var(--text-dim); line-height: 1.6; margin-bottom: 12px;
+    }
+
+    .guide-box {
+      background: white; border-radius: 16px; padding: 12px;
+      margin: 15px 0; text-align: center;
+    }
+    .guide-box .title { color: #000; font-weight: 800; font-size: 14px; }
+    .guide-box .action { color: #6366f1; font-weight: 700; font-size: 13px; text-decoration: underline; margin-top: 5px; }
+
+    .footer {
+      margin-top: 40px; text-align: center;
+      font-size: 13px; color: var(--text-dim);
+    }
+    .footer strong { color: #fff; letter-spacing: 0.5px; }
+
   </style>
 </head>
 <body>
+  <div class="mesh-bg"></div>
+
   <div class="container">
-    <div class="logo">SKView</div>
-    <div class="live-count-header">
-      <span class="pulse"></span> <span id="visitCounter">0</span> Unique Students Helped
-    </div>
-    
-    <div style="margin-top: 10px;">
-      <a href="/entry" class="btn-entry">ENTER COE MAIN</a>
-      <button class="hunter-btn" onclick="toggleHunter()" id="hunterBtn">START HUNTER MODE</button>
+    <div class="logo-area">
+      <div class="logo">SKView</div>
+      <div class="live-status">
+        <span class="pulse-dot"></span>
+        <span id="visitCounter">...</span> Students Assisted
+      </div>
     </div>
 
-    <div class="instruction-card">
-      <h3>🚀 Success Guide</h3>
-      <p>1. If the website fails, <strong>Switch on Hunter Mode</strong> then try the Enter button.</p>
-      <p>2. If you see "Can't translate", click <strong>"Go to original page"</strong>.</p>
-      
-      <div class="error-img-box">
-        <div class="error-img-placeholder">Google Translate</div>
-        <div style="color:#333; font-size: 12px; margin: 10px 0;">Can't translate this page</div>
-        <div class="error-img-link">Go to original page</div>
+    <div class="glass-card">
+      <a href="/entry" class="btn-main">ENTER COE MAIN</a>
+      <button class="btn-hunter" onclick="toggleHunter()" id="hunterBtn">INITIALIZE HUNTER MODE</button>
+
+      <div class="instructions">
+        <h3>🚀 Optimization Guide</h3>
+        <p>1. If latency is high, enable <strong>Hunter Mode</strong> to auto-detect availability.</p>
+        <p>2. On "Can't translate" screen, tap <strong>"Go to original page"</strong>.</p>
+        
+        <div class="guide-box">
+          <div class="title">Google Translate</div>
+          <div style="color:#666; font-size: 11px; margin: 4px 0;">Proxy Layer Response</div>
+          <div class="action">Go to original page</div>
+        </div>
+        
+        <p>3. <strong>System Buffering:</strong> Servers are under load. Please remain on page; it will auto-resolve.</p>
       </div>
-      
-      <p>3. <strong>Wait for a minute</strong> as servers are busy. Please wait and <strong>do not close</strong> while it reloads.</p>
     </div>
 
     <footer class="footer">
-      <div>Founder: <strong>KK_947</strong></div>
-      <div style="font-size: 11px; margin-top: 5px; opacity: 0.7;">Powered by Kinnova Tech</div>
+      <div>Architect: <strong>KK_947</strong></div>
+      <div style="font-size: 11px; margin-top: 6px; opacity: 0.5;">POWERED BY KINNOVA TECH</div>
     </footer>
   </div>
 
