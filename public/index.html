@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SKView — Anna University Gateway</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: #111118;
+      --primary: #6366f1;
+      --text: #fff;
+      --dim: #71717a;
+      --border: #1e1e2e;
+    }
+    body {
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-height: 100vh; text-align: center;
+      padding: 20px;
+    }
+    .container { max-width: 440px; width: 100%; }
+    .logo {
+      font-weight: 900; font-size: 32px; letter-spacing: -1px; margin-bottom: 25px;
+      background: linear-gradient(135deg, var(--primary), #a855f7);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    
+    .btn-entry {
+      display: block; width: 100%; padding: 22px;
+      background: var(--primary); color: #fff;
+      text-decoration: none; border-radius: 16px;
+      font-weight: 800; font-size: 18px;
+      box-shadow: 0 10px 30px rgba(99,102,241,0.4);
+      margin-bottom: 20px; transition: transform 0.2s;
+    }
+    .btn-entry:active { transform: scale(0.96); }
+
+    .hunter-box {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px; margin-bottom: 25px;
+    }
+    .hunter-btn {
+      background: #1a1a25; color: #fff; border: 1px solid var(--primary);
+      padding: 12px 24px; border-radius: 10px; font-weight: 700; cursor: pointer;
+    }
+
+    .instruction-card {
+      background: #161625; border-radius: 16px; padding: 20px;
+      text-align: left; border: 1px solid #2e2e4e;
+    }
+    .instruction-card h3 { font-size: 15px; margin-bottom: 10px; color: #a5b4fc; }
+    .instruction-card p { font-size: 13px; color: var(--dim); line-height: 1.5; }
+    .instruction-card strong { color: #fff; }
+    
+    .error-img-box {
+      background: #fff; border-radius: 10px; margin: 15px 0; padding: 10px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .error-img-placeholder {
+       color: #000; font-weight: 800; font-size: 14px; margin-bottom: 5px;
+    }
+    .error-img-link { color: #6366f1; font-weight: 700; font-size: 13px; text-decoration: underline; }
+
+    .footer { margin-top: 40px; font-size: 13px; color: var(--dim); }
+    .footer strong { color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">SKView</div>
+    
+    <div style="margin-bottom: 30px;">
+      <a href="/entry" class="btn-entry">ENTER COE MAIN</a>
+      <button class="hunter-btn" onclick="toggleHunter()" id="hunterBtn">START HUNTER MODE</button>
+    </div>
+
+    <div class="instruction-card">
+      <h3>⚠️ If you see a "Can't translate" page:</h3>
+      <p>1. Click <strong>"Go to original page"</strong> (shown below).</p>
+      <div class="error-img-box">
+        <div class="error-img-placeholder">Google Translate</div>
+        <div style="color:#333; font-size: 12px; margin: 10px 0;">Can't translate this page</div>
+        <div class="error-img-link">Go to original page</div>
+      </div>
+      <p>2. <strong>Wait 5-10 seconds.</strong> You will be automatically redirected to the actual Anna University login page.</p>
+    </div>
+
+    <footer class="footer">
+      <div>Founder: <strong>Karthikeyan</strong></div>
+      <div style="font-size: 11px; margin-top: 4px;">Powered by Kinnova Tech</div>
+    </footer>
+  </div>
+
+  <script>
+    let hunterActive = false;
+    function toggleHunter() {
+      hunterActive = !hunterActive;
+      const btn = document.getElementById('hunterBtn');
+      if (hunterActive) {
+        btn.textContent = "HUNTER ACTIVE...";
+        btn.style.color = "#22c55e";
+        startHunting();
+      } else {
+        btn.textContent = "START HUNTER MODE";
+        btn.style.color = "#fff";
+      }
+    }
+    function startHunting() {
+      if (!hunterActive) return;
+      fetch('/api/ping?id=coe').then(r => r.json()).then(d => {
+        if (d.status === 'online') window.location.href = "/entry";
+        else setTimeout(startHunting, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
