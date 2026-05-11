@@ -50,8 +50,8 @@ app.get('/api/stats', (req, res) => {
 
 // ─── Entry Pipeline ──────────────────────────────────────────
 app.get('/entry', (req, res) => {
-  const target = 'https://coe.annauniv.edu/home/';
-  const bypassUrl = `https://translate.google.com/translate?sl=en&tl=en&u=${encodeURIComponent(target)}`;
+  // Mechanical Bypass: Subdomain-based proxy skips the "Can't Translate" error page
+  const bypassUrl = `https://coe-annauniv-edu.translate.goog/home/?_x_tr_sl=en&_x_tr_tl=en&_x_tr_hl=en&_x_tr_pto=wapp`;
   res.redirect(bypassUrl);
 });
 
