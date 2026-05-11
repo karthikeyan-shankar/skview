@@ -50,8 +50,9 @@ app.get('/api/stats', (req, res) => {
 
 // ─── Entry Pipeline ──────────────────────────────────────────
 app.get('/entry', (req, res) => {
-  // Mechanical Bypass: Subdomain-based proxy skips the "Can't Translate" error page
-  const bypassUrl = `https://coe-annauniv-edu.translate.goog/home/?_x_tr_sl=en&_x_tr_tl=en&_x_tr_hl=en&_x_tr_pto=wapp`;
+  // FINAL MECHANICAL BYPASS: Redirects directly to the post-bridge URL
+  // This skips the Google Translate landing page entirely.
+  const bypassUrl = `https://coe.annauniv.edu/home/?_x_tr_sl=en&_x_tr_tl=en&_x_tr_hl=en-GB`;
   res.redirect(bypassUrl);
 });
 
