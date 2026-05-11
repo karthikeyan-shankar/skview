@@ -30,10 +30,35 @@ function toggleHunter() {
   }
 }
 
+function startRedirect() {
+  const overlay = document.getElementById('loadingOverlay');
+  const status = document.getElementById('statusText');
+  
+  overlay.style.display = 'flex';
+  
+  const steps = [
+    "SECURING CONNECTION...",
+    "BYPASSING CONGESTION...",
+    "ESTABLISHING HANDSHAKE...",
+    "FINALIZING TUNNEL..."
+  ];
+  
+  let currentStep = 0;
+  const interval = setInterval(() => {
+    currentStep++;
+    if (currentStep < steps.length) {
+      status.textContent = steps[currentStep];
+    } else {
+      clearInterval(interval);
+      window.location.href = "/entry";
+    }
+  }, 800);
+}
+
 function startHunting() {
   if (!hunterActive) return;
   fetch('/api/ping').then(r => r.json()).then(d => {
-    if (d.status === 'online') window.location.href = "/entry";
+    if (d.status === 'online') startRedirect(); // Use the new redirect with loading screen
     else setTimeout(startHunting, 2000);
   }).catch(() => setTimeout(startHunting, 2000));
 }
