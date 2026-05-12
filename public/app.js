@@ -141,19 +141,19 @@ function initBeams() {
 
   const group = new THREE.Group();
   group.rotation.z = THREE.MathUtils.degToRad(35);
-  group.rotation.x = THREE.MathUtils.degToRad(10);
+  group.rotation.x = THREE.MathUtils.degToRad(12);
   
-  // Adjusted for "Wide Sheets" look from reference
-  const geometry = createStackedPlanesBufferGeometry(12, 8, 40, 0.5, 100);
+  // Expanded for panoramic coverage
+  const geometry = createStackedPlanesBufferGeometry(18, 12, 60, 1.5, 100);
   const mesh = new THREE.Mesh(geometry, beamMaterial);
   group.add(mesh);
   scene.add(group);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.05); // Deep blacks
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.02);
   scene.add(ambientLight);
 
-  const dirLight = new THREE.DirectionalLight(0xffffff, 5.0); // Extreme side light for glints
-  dirLight.position.set(15, 10, 10);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 6.0); // Ultra-Radiant specular
+  dirLight.position.set(20, 15, 15);
   scene.add(dirLight);
 
   function resize() {
@@ -167,7 +167,7 @@ function initBeams() {
   function update() {
     requestAnimationFrame(update);
     const delta = clock.getDelta();
-    uniforms.time.value += delta * 0.5; // Elegant surging flow
+    uniforms.time.value += delta * 0.45; // Smooth, powerful radiance
     renderer.render(scene, camera);
   }
   update();
