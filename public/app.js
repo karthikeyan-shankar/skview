@@ -119,23 +119,27 @@ function initBeams() {
       uniform float uScale;
       ${noise}
       float getPos(vec3 pos, vec2 uv) {
-        vec3 noisePos = vec3(pos.x * 0.1, pos.y - uv.y, pos.z + time * uSpeed) * uScale;
-        return cnoise(noisePos) * 2.5; // Stronger displacement for "Brushed" look
+        // Multi-axis rolling for "Backside" motion
+        vec3 noisePos = vec3(pos.x * 0.2 + time * 0.5, pos.y - uv.y + time * 0.2, pos.z + time * uSpeed) * uScale;
+        return cnoise(noisePos) * 3.0;
       }
       ${shader.vertexShader}
     `.replace('#include <begin_vertex>', `
       vec3 transformed = vec3( position );
       transformed.z += getPos(transformed, uv);
+      // Sweeping drift
+      transformed.x += sin(time * 0.2 + position.y * 0.05) * 2.0;
     `);
 
     shader.fragmentShader = `
       uniform float uNoiseIntensity;
+      uniform float time;
       ${noise}
       ${shader.fragmentShader}
     `.replace('#include <dithering_fragment>', `
       #include <dithering_fragment>
-      float randomNoise = random(gl_FragCoord.xy + time);
-      gl_FragColor.rgb -= randomNoise / 8. * uNoiseIntensity; // Intense film grain
+      float randomNoise = random(gl_FragCoord.xy + fract(time * 100.0));
+      gl_FragColor.rgb -= randomNoise / 6. * uNoiseIntensity;
     `);
   };
 
@@ -143,7 +147,6 @@ function initBeams() {
   group.rotation.z = THREE.MathUtils.degToRad(35);
   group.rotation.x = THREE.MathUtils.degToRad(12);
   
-  // Expanded for panoramic coverage
   const geometry = createStackedPlanesBufferGeometry(18, 12, 60, 1.5, 100);
   const mesh = new THREE.Mesh(geometry, beamMaterial);
   group.add(mesh);
@@ -152,7 +155,7 @@ function initBeams() {
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.02);
   scene.add(ambientLight);
 
-  const dirLight = new THREE.DirectionalLight(0xffffff, 6.0); // Ultra-Radiant specular
+  const dirLight = new THREE.DirectionalLight(0xffffff, 6.0);
   dirLight.position.set(20, 15, 15);
   scene.add(dirLight);
 
@@ -167,7 +170,7 @@ function initBeams() {
   function update() {
     requestAnimationFrame(update);
     const delta = clock.getDelta();
-    uniforms.time.value += delta * 0.45; // Smooth, powerful radiance
+    uniforms.time.value += delta * 1.2; // Aggressive motion step
     renderer.render(scene, camera);
   }
   update();
