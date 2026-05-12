@@ -102,9 +102,9 @@ function initBeams() {
 
   const uniforms = {
     time: { value: 0 },
-    uSpeed: { value: 4.5 },
-    uNoiseIntensity: { value: 2.2 },
-    uScale: { value: 0.5 }
+    uSpeed: { value: 3.5 },
+    uNoiseIntensity: { value: 3.0 }, // Increased for that gritty film grain look
+    uScale: { value: 0.4 }
   };
 
   beamMaterial.onBeforeCompile = (shader) => {
@@ -119,8 +119,8 @@ function initBeams() {
       uniform float uScale;
       ${noise}
       float getPos(vec3 pos, vec2 uv) {
-        vec3 noisePos = vec3(pos.x * 0., pos.y - uv.y, pos.z + time * uSpeed * 3.) * uScale;
-        return cnoise(noisePos);
+        vec3 noisePos = vec3(pos.x * 0.1, pos.y - uv.y, pos.z + time * uSpeed) * uScale;
+        return cnoise(noisePos) * 2.5; // Stronger displacement for "Brushed" look
       }
       ${shader.vertexShader}
     `.replace('#include <begin_vertex>', `
@@ -134,25 +134,26 @@ function initBeams() {
       ${shader.fragmentShader}
     `.replace('#include <dithering_fragment>', `
       #include <dithering_fragment>
-      float randomNoise = random(gl_FragCoord.xy);
-      gl_FragColor.rgb -= randomNoise / 15. * uNoiseIntensity;
+      float randomNoise = random(gl_FragCoord.xy + time);
+      gl_FragColor.rgb -= randomNoise / 8. * uNoiseIntensity; // Intense film grain
     `);
   };
 
   const group = new THREE.Group();
-  group.rotation.z = THREE.MathUtils.degToRad(30);
-  group.rotation.x = THREE.MathUtils.degToRad(15); // Added tilt for 3D depth visibility
+  group.rotation.z = THREE.MathUtils.degToRad(35);
+  group.rotation.x = THREE.MathUtils.degToRad(10);
   
-  const geometry = createStackedPlanesBufferGeometry(20, 3, 30, 0, 100);
+  // Adjusted for "Wide Sheets" look from reference
+  const geometry = createStackedPlanesBufferGeometry(12, 8, 40, 0.5, 100);
   const mesh = new THREE.Mesh(geometry, beamMaterial);
   group.add(mesh);
   scene.add(group);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.05); // Deep blacks
   scene.add(ambientLight);
 
-  const dirLight = new THREE.DirectionalLight(0xffffff, 3.5); // Boosted light for highlights
-  dirLight.position.set(5, 5, 15);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 5.0); // Extreme side light for glints
+  dirLight.position.set(15, 10, 10);
   scene.add(dirLight);
 
   function resize() {
@@ -166,7 +167,7 @@ function initBeams() {
   function update() {
     requestAnimationFrame(update);
     const delta = clock.getDelta();
-    uniforms.time.value += delta * 0.8; // High-velocity motion unlock
+    uniforms.time.value += delta * 0.5; // Elegant surging flow
     renderer.render(scene, camera);
   }
   update();
