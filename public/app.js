@@ -41,16 +41,15 @@ void main() {
   vec2  tex        = uv * uScale;
   float tOffset    = uSpeed * uTime;
 
-  tex.y += 0.05 * sin(4.0 * tex.x - tOffset);
-  tex.x += 0.02 * cos(3.0 * tex.y + tOffset * 0.5);
+  tex.y += 0.03 * sin(8.0 * tex.x - tOffset);
 
-  float pattern = 0.5 +
-                  0.5 * sin(4.0 * (tex.x + tex.y +
-                                   0.5 * cos(4.0 * tex.x + 4.0 * tex.y) +
-                                   0.5 * tOffset) +
-                           sin(12.0 * (tex.x + tex.y - 0.2 * tOffset)));
+  float pattern = 0.6 +
+                  0.4 * sin(5.0 * (tex.x + tex.y +
+                                   cos(3.0 * tex.x + 5.0 * tex.y) +
+                                   0.02 * tOffset) +
+                           sin(20.0 * (tex.x + tex.y - 0.1 * tOffset)));
 
-  vec4 col = vec4(uColor, 1.0) * vec4(pattern) - rnd / 12.0 * uNoiseIntensity;
+  vec4 col = vec4(uColor, 1.0) * vec4(pattern) - rnd / 15.0 * uNoiseIntensity;
   col.a = 1.0;
   gl_FragColor = col;
 }
@@ -70,9 +69,9 @@ function initSilk() {
   camera.position.z = 1;
 
   const uniforms = {
-    uSpeed: { value: 6.5 },
-    uScale: { value: 1.2 },
-    uNoiseIntensity: { value: 1.8 },
+    uSpeed: { value: 5.0 },
+    uScale: { value: 1.0 },
+    uNoiseIntensity: { value: 1.5 },
     uColor: { value: new THREE.Color("#5227FF") },
     uRotation: { value: 0.0 },
     uTime: { value: 0 }
@@ -97,7 +96,7 @@ function initSilk() {
   const clock = new THREE.Clock();
   function update() {
     requestAnimationFrame(update);
-    uniforms.uTime.value += clock.getDelta() * 0.5; // Increased speed for defined movement
+    uniforms.uTime.value += clock.getDelta() * 0.1; // Restored original slow flow
     renderer.render(scene, camera);
   }
   update();
