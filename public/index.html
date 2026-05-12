@@ -11,11 +11,16 @@
     :root {
       --primary: #ff4d4d;
       --secondary: #ff8c00;
-      --bg: #000000;
+      --bg: #030303;
       --glass: rgba(255, 255, 255, 0.05);
       --glass-border: rgba(255, 255, 255, 0.15);
       --text: #ffffff;
       --text-dim: rgba(255, 255, 255, 0.6);
+      
+      /* Cubes System Variables */
+      --cube-face-bg: #0a0a0a;
+      --cube-face-border: rgba(255, 77, 77, 0.1);
+      --cube-perspective: 1200px;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -27,11 +32,33 @@
       min-height: 100vh; overflow: hidden;
     }
 
-    /* Galaxy Container */
-    #galaxy-bg {
+    /* Cubes Background Architecture */
+    #cubes-bg {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       z-index: -1; pointer-events: none;
+      display: grid;
+      perspective: var(--cube-perspective);
+      overflow: hidden;
     }
+    
+    .cube-wrapper {
+      position: relative; width: 100%; height: 100%; transform-style: preserve-3d;
+    }
+    .cube {
+      position: absolute; width: 100%; height: 100%; transform-style: preserve-3d;
+    }
+    .cube-face {
+      position: absolute; width: 100%; height: 100%;
+      background: var(--cube-face-bg);
+      border: 1px solid var(--cube-face-border);
+      backface-visibility: hidden;
+    }
+    .cube-face--front  { transform: rotateY(0deg) translateZ(20px); }
+    .cube-face--back   { transform: rotateY(180deg) translateZ(20px); }
+    .cube-face--right  { transform: rotateY(90deg) translateZ(20px); }
+    .cube-face--left   { transform: rotateY(-90deg) translateZ(20px); }
+    .cube-face--top    { transform: rotateX(90deg) translateZ(20px); }
+    .cube-face--bottom { transform: rotateX(-90deg) translateZ(20px); }
 
     .container {
       width: 90%; max-width: 400px; padding: 20px 0; text-align: center;
@@ -61,7 +88,7 @@
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
     .glass-card {
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(40px) saturate(180%);
       -webkit-backdrop-filter: blur(40px) saturate(180%);
       border: 0.8px solid rgba(255, 255, 255, 0.15);
@@ -117,9 +144,7 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .loading-text { font-weight: 800; font-size: 20px; color: #fff; margin-bottom: 10px; }
   </style>
-  <script type="importmap">
-    { "imports": { "ogl": "https://unpkg.com/ogl" } }
-  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
   <div id="loadingOverlay">
@@ -128,7 +153,7 @@
     <div id="statusText" style="color: rgba(255,255,255,0.6); font-size: 13px;">SECURING CONNECTION...</div>
   </div>
 
-  <div id="galaxy-bg"></div>
+  <div id="cubes-bg"></div>
 
   <div class="container">
     <div class="logo"><b>SK</b><span>View</span></div>
@@ -155,6 +180,6 @@
     </footer>
   </div>
 
-  <script type="module" src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
