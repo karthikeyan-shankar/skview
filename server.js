@@ -56,7 +56,10 @@ app.get('/entry', (req, res) => {
   res.redirect(bypassUrl);
 });
 
-app.get('/api/ping', (req, res) => res.json({ status: 'online' }));
+app.get('/api/ping', (req, res) => {
+  console.log(`[KEEP-ALIVE] Heartbeat detected at ${new Date().toLocaleTimeString()}`);
+  res.json({ status: 'online', timestamp: Date.now() });
+});
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 app.listen(PORT, () => {
