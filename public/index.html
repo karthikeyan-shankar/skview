@@ -90,6 +90,8 @@
       padding: 45px;
       box-shadow: 0 30px 60px rgba(0,0,0,0.5);
       position: relative;
+      transition: transform 0.1s ease-out;
+      transform-style: preserve-3d;
     }
 
     /* Dynamic Border Glow Component */
@@ -113,23 +115,26 @@
 
     .btn-primary {
       display: block; width: 100%; padding: 22px;
-      background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+      background: rgba(255, 255, 255, 0.9);
       color: #000;
       text-decoration: none; border-radius: 20px;
-      font-weight: 800; font-size: 18px; margin-bottom: 12px;
+      font-weight: 800; font-size: 18px; margin-bottom: 15px;
       transition: all 0.3s; 
       box-shadow: 0 10px 25px rgba(0,0,0,0.4);
       border: none;
+      cursor: pointer;
     }
-    .btn-primary:active { transform: scale(0.96); opacity: 0.8; }
+    .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 15px 30px rgba(255,255,255,0.2); }
 
     .btn-hunter {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       color: #fff; width: 100%; padding: 18px; border-radius: 20px;
       font-weight: 600; font-size: 14px; cursor: pointer;
-      margin-bottom: 30px; transition: all 0.2s;
+      margin-bottom: 35px; transition: all 0.3s;
     }
+    .btn-hunter:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.3); }
 
     .info-section { text-align: left; }
     .info-section h3 { font-size: 14px; color: #ff8c00; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 1px; }

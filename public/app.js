@@ -30,7 +30,7 @@ function toggleHunter() {
   }
 }
 
-// --- Border Glow Logic ---
+// --- 3D Tilt & Border Glow Logic ---
 const card = document.querySelector('.glass-card');
 if (card) {
   card.addEventListener('mousemove', (e) => {
@@ -38,8 +38,19 @@ if (card) {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
+    // Calculate Tilt (max 10 degrees)
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -10;
+    const rotateY = ((x - centerX) / centerX) * 10;
+
     card.style.setProperty('--mouse-x', `${x}px`);
     card.style.setProperty('--mouse-y', `${y}px`);
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+  });
+
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
   });
 }
 
