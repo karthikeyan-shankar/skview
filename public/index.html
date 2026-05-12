@@ -86,26 +86,30 @@
     .pulse { width: 6px; height: 6px; background: #ff4d4d; border-radius: 50%; box-shadow: 0 0 10px #ff4d4d; animation: pulse 2s infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-    /* Ultra-Gloss Card */
+    /* Vapor & Crystal Physics: Deep Obsidian + Specular Glint */
     .glass-card {
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(60px) saturate(180%);
-      -webkit-backdrop-filter: blur(60px) saturate(180%);
-      border: 1.5px solid rgba(255, 255, 255, 0.15);
-      border-radius: 35px;
-      padding: 35px;
+      background: rgba(0, 0, 0, 0.65); /* Deep Obsidian */
+      backdrop-filter: blur(80px) saturate(200%);
+      -webkit-backdrop-filter: blur(80px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.12); /* Ultra-thin edge */
+      border-radius: 40px;
+      padding: 40px;
       box-shadow: 
-        0 40px 80px rgba(0,0,0,0.7),
-        inset 0 1px 2px rgba(255,255,255,0.2);
+        0 40px 100px rgba(0,0,0,0.8),
+        inset 0 1px 0 rgba(255,255,255,0.3); /* The 'Crystal Glint' edge */
       position: relative;
+      overflow: hidden;
     }
 
     .btn-primary {
       display: block; width: 100%; padding: 22px;
-      background: #fff; color: #000;
+      background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+      color: #000;
       text-decoration: none; border-radius: 20px;
       font-weight: 800; font-size: 18px; margin-bottom: 12px;
-      transition: all 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      transition: all 0.3s; 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      border: none;
     }
     .btn-primary:active { transform: scale(0.96); opacity: 0.8; }
 
