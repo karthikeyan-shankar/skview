@@ -102,9 +102,9 @@ function initBeams() {
 
   const uniforms = {
     time: { value: 0 },
-    uSpeed: { value: 2.0 },
-    uNoiseIntensity: { value: 1.75 },
-    uScale: { value: 0.2 }
+    uSpeed: { value: 4.5 },
+    uNoiseIntensity: { value: 2.2 },
+    uScale: { value: 0.5 }
   };
 
   beamMaterial.onBeforeCompile = (shader) => {
@@ -141,17 +141,18 @@ function initBeams() {
 
   const group = new THREE.Group();
   group.rotation.z = THREE.MathUtils.degToRad(30);
+  group.rotation.x = THREE.MathUtils.degToRad(15); // Added tilt for 3D depth visibility
   
   const geometry = createStackedPlanesBufferGeometry(20, 3, 30, 0, 100);
   const mesh = new THREE.Mesh(geometry, beamMaterial);
   group.add(mesh);
   scene.add(group);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
   scene.add(ambientLight);
 
-  const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
-  dirLight.position.set(0, 3, 10);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 3.5); // Boosted light for highlights
+  dirLight.position.set(5, 5, 15);
   scene.add(dirLight);
 
   function resize() {
@@ -165,7 +166,7 @@ function initBeams() {
   function update() {
     requestAnimationFrame(update);
     const delta = clock.getDelta();
-    uniforms.time.value += delta * 0.1;
+    uniforms.time.value += delta * 0.8; // High-velocity motion unlock
     renderer.render(scene, camera);
   }
   update();
