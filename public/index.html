@@ -30,15 +30,13 @@
       overflow: hidden;
     }
 
-    /* Reference Image Theme: Living Blueprint Grid */
-    body::before {
-      content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      z-index: -1;
+    /* Living Blueprint: Soft Mesh Gradient */
+    body {
+      background: linear-gradient(135deg, #050505 0%, #1a0a0a 50%, #050505 100%);
+      background-size: 400% 400%;
+      animation: meshGradient 15s ease infinite;
     }
+    @keyframes meshGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
     .rings-container {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -47,33 +45,47 @@
     }
     .ring {
       position: absolute; border-radius: 50%;
-      filter: blur(80px); opacity: 0.5;
-      animation: float 15s ease-in-out infinite;
+      filter: blur(120px); opacity: 0.6;
+      animation: float 20s ease-in-out infinite;
     }
-    .ring-1 { width: 400px; height: 400px; background: var(--primary); top: -10%; right: -10%; animation-delay: 0s; }
-    .ring-2 { width: 500px; height: 500px; background: var(--secondary); bottom: -15%; left: -10%; animation-delay: -5s; }
-    .ring-3 { width: 300px; height: 300px; background: #8a2be2; top: 40%; left: -5%; animation-delay: -2s; opacity: 0.3; }
-    .ring-4 { width: 350px; height: 350px; background: #00bfff; bottom: 10%; right: -5%; animation-delay: -7s; opacity: 0.3; }
+    .ring-1 { width: 600px; height: 600px; background: #ff4d4d; top: -20%; right: -10%; }
+    .ring-2 { width: 500px; height: 500px; background: #ff8c00; bottom: -10%; left: -5%; }
+    .ring-3 { width: 400px; height: 400px; background: #4d4dff; top: 30%; left: -10%; opacity: 0.2; }
 
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(30px, -50px) scale(1.1); }
-      66% { transform: translate(-20px, 40px) scale(0.9); }
+    @keyframes float { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(40px, 40px); } }
+
+    /* The Obsidian Crystal Box */
+    .glass-card {
+      background: rgba(0, 0, 0, 0.75); /* Deep Obsidian */
+      backdrop-filter: blur(100px) saturate(200%);
+      -webkit-backdrop-filter: blur(100px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 40px;
+      padding: 40px;
+      box-shadow: 
+        0 50px 100px rgba(0,0,0,0.9),
+        inset 0 1px 0 rgba(255,255,255,0.4);
+      position: relative;
+      overflow: hidden;
     }
 
-    /* Scanning Beam Effect */
-    body::after {
-      content: ""; position: fixed; top: -100%; left: 0; width: 100%; height: 100px;
-      background: linear-gradient(to bottom, transparent, rgba(255, 77, 77, 0.05), transparent);
-      z-index: -1; animation: scan 8s linear infinite;
+    /* Grainy Texture & Specular Sweep */
+    .glass-card::before {
+      content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: url('https://grainy-gradients.vercel.app/noise.svg');
+      opacity: 0.05; pointer-events: none; z-index: 1;
     }
-    @keyframes scan { from { top: -100%; } to { top: 200%; } }
-
+    .glass-card::after {
+      content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.03), transparent);
+      transform: rotate(-45deg); animation: sweep 6s ease-in-out infinite;
+    }
     .container {
       width: 90%; max-width: 400px;
       padding: 20px 0;
       text-align: center;
       animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative; z-index: 10;
     }
 
     @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
@@ -99,20 +111,7 @@
     .pulse { width: 6px; height: 6px; background: #ff4d4d; border-radius: 50%; box-shadow: 0 0 10px #ff4d4d; animation: pulse 2s infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-    /* Vapor & Crystal Physics: Deep Obsidian + Specular Glint */
-    .glass-card {
-      background: rgba(0, 0, 0, 0.65); /* Deep Obsidian */
-      backdrop-filter: blur(80px) saturate(200%);
-      -webkit-backdrop-filter: blur(80px) saturate(200%);
-      border: 1px solid rgba(255, 255, 255, 0.12); /* Ultra-thin edge */
-      border-radius: 40px;
-      padding: 40px;
-      box-shadow: 
-        0 40px 100px rgba(0,0,0,0.8),
-        inset 0 1px 0 rgba(255,255,255,0.3); /* The 'Crystal Glint' edge */
-      position: relative;
-      overflow: hidden;
-    }
+    @keyframes sweep { 0% { transform: translateX(-100%) rotate(-45deg); } 100% { transform: translateX(100%) rotate(-45deg); } }
 
     .btn-primary {
       display: block; width: 100%; padding: 22px;
