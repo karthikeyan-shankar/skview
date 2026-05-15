@@ -3,6 +3,11 @@ const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
 
+// ─── Adaptive Environment Setting (Permanent) ────────────────
+// On Render, this is automatically 'false'. Locally, it is 'true'.
+const TEST_MODE = process.env.NODE_ENV !== 'production'; 
+const PORTAL_URL = "http://localhost:4000";
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
