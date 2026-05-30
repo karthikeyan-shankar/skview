@@ -608,7 +608,13 @@ app.all('/college-api', async (req, res) => {
       url: targetUrl,
       timeout: 10000,
       headers: { ...BROWSER_HEADERS, 'Content-Type': 'application/x-www-form-urlencoded' },
+      httpsAgent: insecureAgent
     };
+
+    // 1. Forward cookies from client browser to college portal
+    if (req.headers.cookie) {
+      config.headers['Cookie'] = req.headers.cookie;
+    }
 
     // Forward POST data (exam key, answers, etc.)
     if (method === 'post' && req.body) {
@@ -622,6 +628,12 @@ app.all('/college-api', async (req, res) => {
     }
 
     const response = await axios(config);
+
+    // 2. Forward Set-Cookie headers from college portal back to client browser
+    const setCookieHeaders = response.headers['set-cookie'];
+    if (setCookieHeaders) {
+      res.set('Set-Cookie', setCookieHeaders);
+    }
     
     const contentType = response.headers['content-type'];
     if (contentType) res.set('Content-Type', contentType);
