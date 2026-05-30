@@ -248,24 +248,100 @@ setInterval(async () => {
   await fetchAndCachePortal();
 }, 15000);
 
-// ─── Portal Trap Route — CACHE-FIRST, INSTANT RESPONSE ──────
+// ─── Portal Trap Route — DYNAMIC IFRAME / CACHE FALLBACK ────
 app.get('/portal', (req, res) => {
-  // ALWAYS serve from cache if available — NEVER block on live fetch
-  if (cachedPortalHTML) {
+  const isOnline = portalStatus === 'online';
+
+  if (isOnline) {
+    // Portal is online! Serve the high-fidelity native iframe.
+    // This allows PHP sessions, cookies, captcha, and logins to work natively and perfectly!
+    cacheHits++;
+    const trapBar = generateTrapBar('live', 0);
+    const iframeSrc = TEST_MODE ? `${PORTAL_URL}/results` : 'https://coe.annauniv.edu/home/';
+
+    console.log(`[TRAP] 🌐 Serving live iframe for AU Portal | Hits: ${cacheHits}`);
+
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Anna University Portal — SKView Trap Environment</title>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #030303;
+            font-family: 'Outfit', sans-serif;
+          }
+          iframe {
+            position: absolute;
+            top: 50px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 50px);
+            border: none;
+            background: #fff;
+          }
+          .loading-overlay {
+            position: absolute;
+            top: 50px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 50px);
+            background: #0a0a14;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.4s ease;
+          }
+          .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(82, 39, 255, 0.2);
+            border-top: 3px solid #5227FF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+          }
+          @keyframes spin { to { transform: rotate(360deg); } }
+          .loading-overlay p {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            letter-spacing: 1px;
+            font-weight: 600;
+          }
+        </style>
+      </head>
+      <body>
+        ${trapBar}
+        <div id="loader" class="loading-overlay">
+          <div class="spinner"></div>
+          <p>SECURE TRAP CONNECTION ACTIVE</p>
+        </div>
+        <iframe src="${iframeSrc}" onload="document.getElementById('loader').style.opacity='0';setTimeout(()=>document.getElementById('loader').remove(),400)"></iframe>
+      </body>
+      </html>
+    `);
+  } else if (cachedPortalHTML) {
+    // Portal is offline! Serve from cache if available.
     cacheHits++;
     const cacheAge = Math.round((Date.now() - cacheTimestamp) / 1000);
-    const isRecent = cacheAge < 30; // Less than 30s = consider "live"
-    
-    // Inject the trap bar with current status
-    const trapBar = generateTrapBar(isRecent ? 'live' : 'cached', cacheAge);
+    const trapBar = generateTrapBar('cached', cacheAge);
     const finalHTML = cachedPortalHTML.replace(/<body[^>]*>/i, (match) => match + trapBar);
-    
-    console.log(`[TRAP] 📦 Served from cache (${cacheAge}s old) | Hits: ${cacheHits} | Portal: ${portalStatus}`);
+
+    console.log(`[TRAP] 📦 Served from cache (${cacheAge}s old) | Hits: ${cacheHits} | Portal: offline`);
     res.send(finalHTML);
   } else {
     cacheMisses++;
     // No cache at all — show styled loading page that auto-retries
-    console.log(`[TRAP] ⚠️ No cache available yet. Showing loading page.`);
+    console.log(`[TRAP] ⚠️ No cache or connection available. Showing loading page.`);
     res.send(`
       <!DOCTYPE html>
       <html><head>
@@ -291,7 +367,7 @@ app.get('/portal', (req, res) => {
         <h1>🛡️</h1>
         <h2>Trap Environment Initializing</h2>
         <div class="spinner"></div>
-        <p>SKView is capturing the Anna University portal content.<br>This happens automatically — just wait.</p>
+        <p>SKView is establishing a secure trap connection.<br>This happens automatically — just wait.</p>
         <div class="status">
           <p>Portal Status: 🔴 ${portalStatus.toUpperCase()}</p>
           <p>Fetch Attempts: ${consecutiveFailures}</p>
