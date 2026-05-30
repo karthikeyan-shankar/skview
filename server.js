@@ -2,8 +2,12 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
+const https = require('https');
 const axios = require('axios');
 const cheerio = require('cheerio');
+
+// AU portal has invalid/self-signed SSL cert — skip verification for AU fetches
+const insecureAgent = new https.Agent({ rejectUnauthorized: false });
 
 // ─── Adaptive Environment Setting (Permanent) ────────────────
 // On Render, this is automatically 'false'. Locally, it is 'true'.
@@ -144,8 +148,9 @@ async function fetchAndCachePortal() {
   
   try {
     const response = await axios.get(targetUrl, { 
-      timeout: 5000, 
-      headers: BROWSER_HEADERS 
+      timeout: 8000, 
+      headers: BROWSER_HEADERS,
+      httpsAgent: insecureAgent
     });
 
     // Only cache valid HTML responses (not error pages)
@@ -558,7 +563,8 @@ app.get('/proxy', async (req, res) => {
     const response = await axios.get(targetUrl, {
       timeout: 5000,
       responseType: 'arraybuffer',
-      headers: BROWSER_HEADERS
+      headers: BROWSER_HEADERS,
+      httpsAgent: insecureAgent
     });
 
     // Forward the content type
@@ -588,7 +594,8 @@ app.get('/api/ping', async (req, res) => {
     try {
       await axios.get('https://coe.annauniv.edu/home/', { 
         timeout: 5000, 
-        headers: BROWSER_HEADERS 
+        headers: BROWSER_HEADERS,
+        httpsAgent: insecureAgent
       });
       res.json({ status: 'online', timestamp: Date.now() });
     } catch (e) {
