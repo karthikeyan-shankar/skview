@@ -2,3 +2,9 @@ node_modules/
 .DS_Store
 .env
 package-lock.json
+unique_visits.json
+mock-portal.js
+storm-generator.js
+au-portal-mock.html
+exam-day-storm.js
+trap-proof.js

@@ -101,20 +101,20 @@ function initSilk() {
 // --- Initialize App ---
 let hunterActive = false;
 
+const COLLEGE_PORTAL_URL = 'https://www.chettinadtech.ac.in/intranet/OnlinePortal';
+
 document.addEventListener('DOMContentLoaded', () => {
   initSilk();
   initStats();
   
-  const card = document.querySelector('.glass-card');
-  if (card) {
+  // Mouse glow tracking on gateway cards
+  document.querySelectorAll('.gateway-card').forEach(card => {
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      card.style.setProperty('--mouse-x', `${x}px`);
-      card.style.setProperty('--mouse-y', `${y}px`);
+      card.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+      card.style.setProperty('--my', `${e.clientY - rect.top}px`);
     });
-  }
+  });
 });
 
 async function initStats() {
@@ -126,36 +126,75 @@ async function initStats() {
   } catch {}
 }
 
-window.startRedirect = function() {
+// ─── Loading Animation Helper ────────────────────────────────
+function showLoading(title, steps, destination) {
   const overlay = document.getElementById('loadingOverlay');
   const status = document.getElementById('statusText');
+  const loadingTitle = document.getElementById('loadingTitle');
   overlay.style.display = 'flex';
-  const steps = ["SECURING CONNECTION...", "BYPASSING CONGESTION...", "ESTABLISHING HANDSHAKE...", "FINALIZING TUNNEL..."];
-  let currentStep = 0;
+  loadingTitle.textContent = title;
+  status.textContent = steps[0];
+  let i = 0;
   const interval = setInterval(() => {
-    currentStep++;
-    if (currentStep < steps.length) status.textContent = steps[currentStep];
-    else { clearInterval(interval); window.location.href = "/entry"; }
-  }, 800);
+    i++;
+    if (i < steps.length) status.textContent = steps[i];
+    else { clearInterval(interval); window.location.href = destination; }
+  }, 700);
+}
+
+// ─── AU COE Direct Entry ─────────────────────────────────────
+window.startRedirect = function() {
+  showLoading('SKVIEW TUNNELING', [
+    'SECURING CONNECTION...',
+    'BYPASSING CONGESTION...',
+    'ESTABLISHING HANDSHAKE...',
+    'FINALIZING TUNNEL...'
+  ], '/entry');
 };
 
+// ─── College Portal Direct Entry ─────────────────────────────
+window.enterCollege = function() {
+  showLoading('COLLEGE PORTAL', [
+    'CONNECTING TO CAMPUS SERVER...',
+    'LOADING EXAM ENVIRONMENT...',
+    'ESTABLISHING SESSION...',
+    'ENTERING PORTAL...'
+  ], '/college-portal');
+};
+
+// ─── Trap Mode (works for both AU and College) ───────────────
+window.enterTrap = function(type) {
+  const isAU = type === 'au';
+  const title = isAU ? 'AU TRAP MODE' : 'EXAM TRAP MODE';
+  const dest = isAU ? '/portal' : '/college-portal';
+  
+  showLoading('🛡️ ' + title, [
+    'CAPTURING PORTAL CONTENT...',
+    'BUILDING TRAP ENVIRONMENT...',
+    'CACHING RESOURCES...',
+    'ACTIVATING SHIELD...'
+  ], dest);
+};
+
+// ─── Hunter Mode (AU only) ───────────────────────────────────
 window.toggleHunter = function() {
   hunterActive = !hunterActive;
   const btn = document.getElementById('hunterBtn');
   if (hunterActive) {
-    btn.textContent = "WAITING FOR SERVER...";
-    btn.style.color = "#ff4d4d"; btn.style.borderColor = "#ff4d4d";
+    btn.textContent = '⚡ HUNTING FOR SERVER...';
+    btn.style.color = '#ff4d4d'; btn.style.borderColor = '#ff4d4d';
     startHunting();
   } else {
-    btn.textContent = "USE HUNTER MODE";
-    btn.style.color = "#fff"; btn.style.borderColor = "rgba(255,255,255,0.15)";
+    btn.textContent = '⚡ HUNTER MODE';
+    btn.style.color = ''; btn.style.borderColor = '';
   }
 };
 
 function startHunting() {
   if (!hunterActive) return;
   fetch('/api/ping').then(r => r.json()).then(d => {
-    if (d.status === 'online') window.startRedirect();
+    if (d.status === 'online') window.enterTrap('au');
     else setTimeout(startHunting, 2000);
   }).catch(() => setTimeout(startHunting, 2000));
 }
+
