@@ -250,6 +250,7 @@ setInterval(async () => {
 
 // ─── Portal Trap Route — DYNAMIC IFRAME / CACHE FALLBACK ────
 app.get('/portal', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   const isOnline = portalStatus === 'online';
 
   if (isOnline) {
@@ -535,6 +536,7 @@ async function fetchCollegePortal() {
 
 // ─── College Portal Route ────────────────────────────────────
 app.get('/college-portal', async (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   // Try to cache if we don't have one yet
   if (!collegeCache) {
     await fetchCollegePortal();
