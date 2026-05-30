@@ -501,10 +501,20 @@ async function fetchCollegePortal() {
       (function() {
         var _origAjax = $.ajax;
         $.ajax = function(opts) {
-          if (opts.url && opts.url.indexOf('chettinadtech.ac.in') !== -1) {
+          if (opts.url) {
+            var targetUrl = opts.url;
+            // Resolve relative URLs to the college exam portal domain
+            if (!targetUrl.startsWith('http') && !targetUrl.startsWith('//')) {
+              var path = targetUrl.startsWith('/') ? targetUrl : '/' + targetUrl;
+              if (path.indexOf('/intranet/OnlinePortal') === -1) {
+                targetUrl = 'https://www.chettinadtech.ac.in/intranet/OnlinePortal' + path;
+              } else {
+                targetUrl = 'https://www.chettinadtech.ac.in' + path;
+              }
+            }
+            
             // Route through SKView proxy
-            var proxyUrl = '/college-api?url=' + encodeURIComponent(opts.url);
-            opts.url = proxyUrl;
+            opts.url = '/college-api?url=' + encodeURIComponent(targetUrl);
           }
           return _origAjax.call($, opts);
         };
