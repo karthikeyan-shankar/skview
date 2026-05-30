@@ -258,7 +258,7 @@ app.get('/portal', (req, res) => {
     
     // Inject the trap bar with current status
     const trapBar = generateTrapBar(isRecent ? 'live' : 'cached', cacheAge);
-    const finalHTML = cachedPortalHTML.replace('<body>', '<body>' + trapBar);
+    const finalHTML = cachedPortalHTML.replace(/<body[^>]*>/i, (match) => match + trapBar);
     
     console.log(`[TRAP] 📦 Served from cache (${cacheAge}s old) | Hits: ${cacheHits} | Portal: ${portalStatus}`);
     res.send(finalHTML);
