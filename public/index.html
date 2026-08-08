@@ -7,6 +7,7 @@
   <meta name="description" content="SKView by Kinnova Tech — India's fastest results gateway. Access Anna University and college exam portals instantly, even during server crashes.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --primary: #5227FF;
@@ -285,10 +286,17 @@
     #statusText { color: var(--text-dim); font-size: 12px; letter-spacing: 0.5px; }
   </style>
   <script type="importmap">
-    { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+    { 
+      "imports": { 
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "ogl": "https://esm.sh/ogl@1.0.11"
+      } 
+    }
   </script>
 </head>
 <body>
+  <!-- Silk Background -->
+  <div id="silk-bg"></div>
   <!-- Loading Overlay -->
   <div id="loadingOverlay">
     <div class="loader-ring"></div>
@@ -296,8 +304,7 @@
     <div id="statusText">SECURING CONNECTION...</div>
   </div>
 
-  <!-- Silk Background -->
-  <div id="silk-bg"></div>
+  <!-- Silk Background Disabled -->
 
   <!-- Page Content -->
   <div class="page-wrapper">
@@ -405,5 +412,6 @@
   </div>
 
   <script type="module" src="app.js"></script>
+
 </body>
 </html>

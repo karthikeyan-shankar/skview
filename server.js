@@ -1,3 +1,21 @@
+const cluster = require('cluster');
+const os = require('os');
+
+if (cluster.isMaster) {
+  const numCPUs = os.cpus().length;
+  console.log(`\n[MASTER] 🚀 SKView Cluster Master ${process.pid} is running`);
+  console.log(`[MASTER] ⚡ Forking ${numCPUs} worker processes to handle the exam storm...\n`);
+  
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+  
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`[MASTER] ⚠️ Worker ${worker.process.pid} died. Restarting immediately...`);
+    cluster.fork();
+  });
+} else {
+
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -5,9 +23,15 @@ const fs = require('fs');
 const https = require('https');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const compression = require('compression');
 
 // AU portal has invalid/self-signed SSL cert — skip verification for AU fetches
-const insecureAgent = new https.Agent({ rejectUnauthorized: false });
+// [OPTIMIZATION]: Enabled Keep-Alive to prevent constant TLS handshakes
+const insecureAgent = new https.Agent({ 
+  rejectUnauthorized: false,
+  keepAlive: true,
+  maxSockets: 200
+});
 
 // ─── Adaptive Environment Setting (Permanent) ────────────────
 // On Render, this is automatically 'false'. Locally, it is 'true'.
@@ -18,10 +42,19 @@ const AU_BASE = TEST_MODE ? PORTAL_URL : 'https://coe.annauniv.edu';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// [OPTIMIZATION]: Disable expensive headers
+app.disable('x-powered-by');
+app.disable('etag');
+
+// [OPTIMIZATION]: Compress all payloads
+app.use(compression());
+
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+
+// [OPTIMIZATION]: 1-day aggressive static caching
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: '1d' }));
 
 // ─── Unique Visitor Tracking (KK_947) ────────────────────────
 const VISITS_FILE = path.join(__dirname, 'unique_visits.json');
@@ -740,26 +773,24 @@ app.all('/proxy', async (req, res) => {
 
 // ─── Heartbeat (Used by Hunter Mode) ─────────────────────────
 app.get('/api/ping', async (req, res) => {
-  if (TEST_MODE) {
-    // In test mode, check the mock portal
-    try {
-      await axios.get(`${PORTAL_URL}/ping`, { timeout: 2000 });
-      res.json({ status: 'online', timestamp: Date.now() });
-    } catch (e) {
-      res.status(503).json({ status: 'busy' });
-    }
-  } else {
-    // In production, check the real AU portal
-    try {
-      await axios.get('https://coe.annauniv.edu/home/', { 
-        timeout: 5000, 
-        headers: BROWSER_HEADERS,
-        httpsAgent: insecureAgent
-      });
-      res.json({ status: 'online', timestamp: Date.now() });
-    } catch (e) {
-      res.status(503).json({ status: 'busy' });
-    }
+  const target = TEST_MODE ? `${PORTAL_URL}/ping` : `${AU_BASE}/home/`;
+  try {
+    const start = Date.now();
+    await axios.head(target, { 
+      timeout: 3000, 
+      headers: BROWSER_HEADERS,
+      httpsAgent: insecureAgent,
+      maxRedirects: 2
+    });
+    const latency = Date.now() - start;
+    res.json({ status: 'online', latency, timestamp: Date.now() });
+  } catch (e) {
+    res.status(503).json({ 
+      status: 'busy', 
+      reason: e.code || e.message || 'timeout',
+      portalCache: !!cachedPortalHTML,
+      timestamp: Date.now() 
+    });
   }
 });
 
@@ -768,8 +799,10 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.ht
 app.listen(PORT, () => {
   console.log(`\n  ╔═══════════════════════════════════════════════════╗`);
   console.log(`  ║  SKView Hybrid Gateway — ${TEST_MODE ? 'LOCAL TEST' : 'LIVE PRODUCTION'}           ║`);
-  console.log(`  ║  Port: ${PORT}                                        ║`);
+  console.log(`  ║  Port: ${PORT} (Worker ${process.pid})                       ║`);
   console.log(`  ║  Mode: Pipeline + Trap Environment               ║`);
   console.log(`  ║  Target: ${TEST_MODE ? 'localhost:4000 (Mock)' : 'coe.annauniv.edu (LIVE)'}           ║`);
   console.log(`  ╚═══════════════════════════════════════════════════╝\n`);
 });
+
+} // End of worker logic

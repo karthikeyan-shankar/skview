@@ -176,25 +176,44 @@ window.enterTrap = function(type) {
   ], dest);
 };
 
-// ─── Hunter Mode (AU only) ───────────────────────────────────
+// ─── Hunter Mode (AU only) — High-Power Fast Polling ──────────
+let hunterPingCount = 0;
+
 window.toggleHunter = function() {
   hunterActive = !hunterActive;
   const btn = document.getElementById('hunterBtn');
   if (hunterActive) {
-    btn.textContent = '⚡ HUNTING FOR SERVER...';
-    btn.style.color = '#ff4d4d'; btn.style.borderColor = '#ff4d4d';
+    hunterPingCount = 0;
+    btn.innerHTML = '⚡ POWER HUNTING... <span style="opacity:0.5;font-size:11px">(0 pings)</span>';
+    btn.style.color = '#00ff88'; btn.style.borderColor = '#00ff88';
+    btn.style.animation = 'pulse 1s infinite';
     startHunting();
   } else {
     btn.textContent = '⚡ HUNTER MODE';
     btn.style.color = ''; btn.style.borderColor = '';
+    btn.style.animation = '';
   }
 };
 
 function startHunting() {
   if (!hunterActive) return;
+  const btn = document.getElementById('hunterBtn');
+  hunterPingCount++;
+
   fetch('/api/ping').then(r => r.json()).then(d => {
-    if (d.status === 'online') window.enterTrap('au');
-    else setTimeout(startHunting, 2000);
-  }).catch(() => setTimeout(startHunting, 2000));
+    if (d.status === 'online') {
+      btn.innerHTML = '🎯 SERVER OPEN! REDIRECTING...';
+      btn.style.color = '#00ff88'; btn.style.borderColor = '#00ff88';
+      btn.style.animation = '';
+      // Enter Normal COE Mode directly
+      window.location.href = '/entry';
+    } else {
+      btn.innerHTML = `⚡ POWER HUNTING... <span style="opacity:0.5;font-size:11px">(${hunterPingCount} pings)</span>`;
+      setTimeout(startHunting, 1000);
+    }
+  }).catch(() => {
+    btn.innerHTML = `⚡ POWER HUNTING... <span style="opacity:0.5;font-size:11px">(${hunterPingCount} pings)</span>`;
+    setTimeout(startHunting, 1000);
+  });
 }
 
